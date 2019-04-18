@@ -153,3 +153,6 @@ ENV/
 
 # OS X
 .DS_Store
+
+# Emacs backuup files
+*~
