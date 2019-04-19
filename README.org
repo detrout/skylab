@@ -1,0 +1,34 @@
+#+TITLE: Trying to run HCA Pipeline
+#+AUTHOR: Diane Trout
+* Investigating HCA RNA-seq Pipeline.
+
+https://github.com/HumanCellAtlas/skylab
+
+The documentation is incomplete and their wiki had broken links
+[[https://github.com/HumanCellAtlas/skylab/issues/161][issue #161]]
+
+Their pre-built indices live on google cloud.
+
+Cromwell input file
+[[file:pipelines/smartseq2_single_sample/SmartSeq2SingleSampleExample.json][pipelines/smartseq2_single_sample/SmartSeq2SingleSampleExample.json]]
+
+"SmartSeq2SingleCell.hisat2_ref_index":
+   "gs://hca-dcp-mint-test-data/reference/HISAT2/genome_snp_tran.tar.gz",
+
+I'm not sure how to pull that index.
+
+* Differences in index types.
+
+They include dbSNP in their HISAT2 and RSEM indexes
+Their build scripts [[file:docker/hisat2/make_grcm38_snp_tran_gencode.sh::#!/bin/sh][make_grchm38_snp_tran_gencode.sh]]
+directly pull files from
+ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse
+
+  - gencode.v${GENCODE_RELEASE}.annotation.gtf
+  - GRCm38.primary_assembly.genome.fa.gz
+
+Meaning they do not have the tRNA or spike in sequences.
+
+ENCODE4 work and ENTEX activites that are concerned with genotype and
+therefore with SNPs it's possible that we should consider this for
+human.
