@@ -48,3 +48,46 @@ switched to galvar and it built, then I tried to figure out how to
 build the HISAT index, and managed to find a wdl file that references
 an already built docker container.
 
+** Building HCA HISAT Index
+
+wdl script for building indexes. Which includes a reference to a
+prebuilt docker image.
+
+[[file:library/accessory_workflows/build_hisat2_reference/BuilHISAT2Referencebundle.wdl::task%20BuildHISAT2reference{][library/accessory_workflows/build_hisat2_reference/BuilHISAT2Referencebundle.wdl]]
+
+I decided to try building using  gtf_version 4 and 21
+
+[[file:library/accessory_workflows/build_hisat2_reference/BuilHISAT2MouseReferencebundle4.json][BuilHISAT2MouseReferencebundle4.json]]
+#+BEGIN_EXAMPLE
+{
+    "HISAT2Ref.dbsnp_version": "150",
+    "HISAT2Ref.gtf_version": "4",
+    "HISAT2Ref.ref_name": "hisat2_M4_snp",
+    "HISAT2Ref.path_dir": "/opt/tools/hisat2-2.1.0"
+}
+#+END_EXAMPLE
+
+[[file:library/accessory_workflows/build_hisat2_reference/BuilHISAT2MouseReferencebundle21.json][BuilHISAT2MouseReferencebundle21.json]]
+Is similar.
+
+#+BEGIN_SRC bash
+pushd library/accessory_workflows/build_hisat2_reference
+java -jar ~/proj/chipseq/cromwell-34.jar run BuilHISAT2MouseReferencebundle.wdl \
+     --inputs BuilHISAT2MouseReferencebundle4.json
+find . -name hisat2_M4_snp.tar.gz -exec mv {} ../../.. \;
+
+java -jar ~/proj/chipseq/cromwell-34.jar run BuilHISAT2MouseReferencebundle.wdl \
+     --inputs BuilHISAT2MouseReferencebundle21.json
+find . -name hisat2_M21_snp.tar.gz -exec mv {} ../../.. \;
+popd
+sudo chown diane:diane gencode_v4_trans.tar.gz
+#+END_SRC
+
+No wonder it finished fast. Those are some empty tar files.
+
+#+BEGIN_EXAMPLE
+ls -l hisat*
+-rw-r--r--   1 nobody nogroup  132 Apr 12 15:00 hisat2_M21_snp.tar.gz
+-rw-r--r--   1 nobody nogroup  126 Apr 16 15:06 hisat2_M4_snp.tar.gz
+#+END_EXAMPLE
+

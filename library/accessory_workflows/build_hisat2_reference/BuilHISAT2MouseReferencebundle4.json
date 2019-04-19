@@ -1,0 +1,6 @@
+{
+    "HISAT2Ref.dbsnp_version": "150",
+    "HISAT2Ref.gtf_version": "4",
+    "HISAT2Ref.ref_name": "hisat2_M4_snp",
+    "HISAT2Ref.path_dir": "/opt/tools/hisat2-2.1.0"
+}
