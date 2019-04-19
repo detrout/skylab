@@ -175,3 +175,55 @@ java -jar ~/proj/chipseq/cromwell-34.jar run BuilHISAT2forRSEM.wdl \
      --inputs BuilHISAT2EncodeMouseforRSEM.json
 #+END_SRC
 
+* Does it align?
+  <2019-04-18 Thu>
+
+Now that we have indexes for HISAT and rsem
+
+Oh... We need both genomic and transcriptomic index, go build that first
+[[*Hisat Transcriptomic index][Hisat Transcriptomic index]]
+
+Lets try customizing the input file
+[[file:pipelines/smartseq2_single_sample/ENCODEMouseSingle.json][ENCODEMouseSingle.json]]
+
+As I read through it I found several files that I needed but didn't
+have available.
+
+** Make rRNA intervals
+
+I needed an rRNA list so I added  [[file:/scp:galvar:/woldlab/loxcyc/home/diane/proj/long-rna-seq-condor/woldrnaseq/make_picard_rrna_intervals.py::def%20main(cmdline=None):][make_picard_rrna_intervals.py]] to
+long-rna-seq-condor.
+
+** Make refFlat
+
+I needed the refFlat file added [[file:/scp:galvar:/woldlab/loxcyc/home/diane/proj/long-rna-seq-condor/woldrnaseq/make_refflat.py::def%20main(cmdline=None):][make_refflat.py]] to long-rna-seq-condor
+
+** Back to aligning
+
+The original [[file:pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl::import%20"HISAT2.wdl"%20as%20HISAT2][SmartSeq2SingleSample.wdl]] was written assuming paired
+end. I've started modifying it to do a single ended run.
+
+Their docs refer to a single fastq, but I have multiple. The HISAT2
+docs seem to suggest that it can take a comma separated list of fastqs
+
+#+BEGIN_SRC bash
+java -jar ~/proj/chipseq/cromwell-34.jar run pipelines/smartseq2_single_sample/SmartSeq2SingleEnd.wdl \
+     --inputs pipelines/smartseq2_single_sample/ENCODEMouseSingle.json
+
+#+END_SRC
+
+* TODO Not working... not sure how to set import paths for cromwell
+
+cromwell.jar run has a parameter -p / --imports that specifies a
+directory or zipfile to search.
+
+Of course when I tried the directory it complained it was a directory
+
+#+BEGIN_SRC bash :results none
+cd library/tasks
+zip -9 ../../library.zip *.wdl
+#+END_SRC
+
+* TODO Try it with and without snps.
+  does it impact index build type
+  does it impact run time?
