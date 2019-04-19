@@ -110,3 +110,54 @@ popd
 sudo chown diane:diane gencode_v4_trans.tar.gz
 #+END_SRC
 
+** RSEM Genomic Index
+
+Next we need an RSEM index. Their original wdl input file pulled
+references directly from
+
+[[file:library/accessory_workflows/build_rsem_reference/BuildRsemMouseBundle4.json][library/accessory_workflows/build_rsem_reference/BuildRsemMouseBundle4.json]]
+#+BEGIN_EXAMPLE
+{
+  "RsemRef.fasta": "/woldlab/loxcyc/home/diane/proj/genome/mm10-M4-male/male.mm10.chrom-ENCFF001RTP_ERCC_spikein.fa",
+  "RsemRef.gtf": "/woldlab/loxcyc/home/diane/proj/genome/mm10-M4-male/gencode.vM4-tRNAs-ERCC.gff",
+  "RsemRef.ref_name":"gencode_v4_primary"
+}
+#+END_EXAMPLE
+[[file:library/accessory_workflows/build_rsem_reference/BuildRsemMouseBundle21.json][library/accessory_workflows/build_rsem_reference/BuildRsemMouseBundle21.json]]
+
+#+BEGIN_SRC bash
+cd library/accessory_workflows/build_rsem_reference
+java -jar ~/proj/chipseq/cromwell-34.jar run BuildRsemReferenceBundle.wdl \
+     --inputs BuildRsemMouseBundle4.json
+#+END_SRC
+
+#+BEGIN_SRC bash
+cd library/accessory_workflows/build_rsem_reference
+find cromwell-executions -name 'gencode_v4_primary.tar' -exec mv {} ../../.. \; && \
+    rm -rf cromwell-executions
+#+END_SRC
+
+#+RESULTS:
+
+That gencode_v4_primary.tar looks promising
+#+BEGIN_SRC bash
+cd library/accessory_workflows/build_rsem_reference
+tar tavf cromwell-executions/RsemRef/*/call-BuildRsemReference/execution/gencode_v4_primary.tar
+#+END_SRC
+
+#+RESULTS:
+| drwxr-xr-x | nobody/nogroup |         0 | 2019-04-16 | 15:37 | rsem/                                |
+| -rw-r--r-- | nobody/nogroup |  71612027 | 2019-04-16 | 15:33 | rsem/rsem_trans_index.ti             |
+| -rw-r--r-- | nobody/nogroup |  22506308 | 2019-04-16 | 15:41 | rsem/rsem_trans_index.rev.2.ebwt     |
+| -rw-r--r-- | nobody/nogroup |  60047434 | 2019-04-16 | 15:37 | rsem/rsem_trans_index.1.ebwt         |
+| -rw-r--r-- | nobody/nogroup | 194987306 | 2019-04-16 | 15:33 | rsem/rsem_trans_index.seq            |
+| -rw-r--r-- | nobody/nogroup |  45012602 | 2019-04-16 | 15:33 | rsem/rsem_trans_index.4.ebwt         |
+| -rw-r--r-- | nobody/nogroup | 182640557 | 2019-04-16 | 15:33 | rsem/rsem_trans_index.n2g.idx.fa     |
+| -rw-r--r-- | nobody/nogroup |  60047434 | 2019-04-16 | 15:41 | rsem/rsem_trans_index.rev.1.ebwt     |
+| -rw-r--r-- | nobody/nogroup | 182640557 | 2019-04-16 | 15:33 | rsem/rsem_trans_index.idx.fa         |
+| -rw-r--r-- | nobody/nogroup |  22506308 | 2019-04-16 | 15:37 | rsem/rsem_trans_index.2.ebwt         |
+| -rw-r--r-- | nobody/nogroup |      1818 | 2019-04-16 | 15:33 | rsem/rsem_trans_index.chrlist        |
+| -rw-r--r-- | nobody/nogroup |    430559 | 2019-04-16 | 15:33 | rsem/rsem_trans_index.grp            |
+| -rw-r--r-- | nobody/nogroup | 182640557 | 2019-04-16 | 15:33 | rsem/rsem_trans_index.transcripts.fa |
+| -rw-r--r-- | nobody/nogroup |   1169855 | 2019-04-16 | 15:33 | rsem/rsem_trans_index.3.ebwt         |
+

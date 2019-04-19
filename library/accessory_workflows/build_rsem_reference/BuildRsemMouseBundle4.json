@@ -1,0 +1,5 @@
+{
+  "RsemRef.fasta": "/woldlab/loxcyc/home/diane/proj/genome/mm10-M4-male/male.mm10.chrom-ENCFF001RTP_ERCC_spikein.fa",
+  "RsemRef.gtf": "/woldlab/loxcyc/home/diane/proj/genome/mm10-M4-male/gencode.vM4-tRNAs-ERCC.gff",
+  "RsemRef.ref_name":"gencode_v4_primary"
+}
