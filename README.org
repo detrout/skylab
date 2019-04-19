@@ -161,3 +161,17 @@ tar tavf cromwell-executions/RsemRef/*/call-BuildRsemReference/execution/gencode
 | -rw-r--r-- | nobody/nogroup | 182640557 | 2019-04-16 | 15:33 | rsem/rsem_trans_index.transcripts.fa |
 | -rw-r--r-- | nobody/nogroup |   1169855 | 2019-04-16 | 15:33 | rsem/rsem_trans_index.3.ebwt         |
 
+* HISAT2 Transcriptome index?
+
+The [[file:pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl][SmartSeq2SingleSample.wdl]] seems to refer to a
+hisat2_ref_trans_name": "gencode_v27_trans_rsem",
+It looks like that's produced by
+[[file:library/accessory_workflows/build_hisat2_reference/BuilHISAT2forRSEM.wdl::task%20BuildHISAT2forRSEM%20{][BuilHISAT2forRSEM.wdl]]
+wrote [[file:library/accessory_workflows/build_hisat2_reference/BuilHISAT2EncodeMouseforRSEM.json][BuilHISAT2EncodeMouseforRSEM.json]] to build new index.
+
+#+BEGIN_SRC bash
+pushd library/accessory_workflows/build_hisat2_reference
+java -jar ~/proj/chipseq/cromwell-34.jar run BuilHISAT2forRSEM.wdl \
+     --inputs BuilHISAT2EncodeMouseforRSEM.json
+#+END_SRC
+
