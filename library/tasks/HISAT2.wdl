@@ -211,6 +211,7 @@ task HISAT2SingleEnd {
   # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GB buffer.
   Int disk = ceil((size(fastq, "GB") * 100) + size(hisat2_ref, "GB") * 2 + 10)
   Int preemptible = 5
+  Int max_retries = 0
 
   meta {
     description: "This HISAT2 alignment task will align single-end fastq reads to reference genome."
@@ -227,6 +228,7 @@ task HISAT2SingleEnd {
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
+    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"    
   }
 
   command {
@@ -250,6 +252,7 @@ task HISAT2SingleEnd {
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
+    maxRetries: max_retries
   }
 
   output {
