@@ -259,6 +259,7 @@ task HISAT2SingleEnd {
     File log_file ="${output_basename}.log"
     File met_file ="${output_basename}.hisat2.met.txt"
     File output_bam = "${output_basename}.bam"
+    File bam_index = "${output_basename}.bam.bai"
   }
 }
 
