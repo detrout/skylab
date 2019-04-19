@@ -91,3 +91,22 @@ ls -l hisat*
 -rw-r--r--   1 nobody nogroup  126 Apr 16 15:06 hisat2_M4_snp.tar.gz
 #+END_EXAMPLE
 
+<2019-04-17 Wed>
+
+Customized make_grcm38
+
+** Hisat Transcriptomic index
+
+Created
+  - [[file:library/accessory_workflows/build_hisat2_reference/BuilHISAT2EncodeMouseTranReferencebundle.wdl::task%20BuildHISAT2EncodeMouseTrans%20{][BuildHISAT2EncodeMouseTranReferencebundle.wdl]]
+  - [[file:library/accessory_workflows/build_hisat2_reference/BuilHISAT2EncodeMouseTranReferencebundle4.json::"HISAT2Ref.gtf_version":%20"4",][BuildHISAT2EncodeMouseTranReferencebundle4.json]]
+
+#+BEGIN_SRC bash
+pushd library/accessory_workflows/build_hisat2_reference
+java -jar ~/proj/chipseq/cromwell-34.jar run BuilHISAT2EncodeMouseTranReferencebundle.wdl \
+     --inputs BuilHISAT2EncodeMouseTranReferencebundle4.json
+find cromwell-executions/ -name 'gencode_v4_trans.tar.gz' -exec mv {} ../../.. \;
+popd
+sudo chown diane:diane gencode_v4_trans.tar.gz
+#+END_SRC
+
