@@ -32,3 +32,19 @@ Meaning they do not have the tRNA or spike in sequences.
 ENCODE4 work and ENTEX activites that are concerned with genotype and
 therefore with SNPs it's possible that we should consider this for
 human.
+
+* First try to run smartseq version of pipeline
+
+Wiki [[https://github.com/HumanCellAtlas/skylab/wiki/SmartSeq2-Pipeline-(v0.2.0)][SmartSeq2-Pipeline-(v0.2.0)]]
+
+** Try to build docker container
+#+BEGIN_SRC bash
+pushd docker/hisat2
+docker build .
+#+END_SRC
+
+Pongo's docker install was broken and had network issues, so I
+switched to galvar and it built, then I tried to figure out how to
+build the HISAT index, and managed to find a wdl file that references
+an already built docker container.
+
