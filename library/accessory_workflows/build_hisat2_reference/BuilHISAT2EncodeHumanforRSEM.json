@@ -1,0 +1,4 @@
+{
+  "HISAT2Ref.rsem_index": "../../../gencode_V24_primary.tar",
+  "HISAT2Ref.ref_name": "gencode_V24_trans_rsem"
+}

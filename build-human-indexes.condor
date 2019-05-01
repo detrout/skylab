@@ -1,0 +1,29 @@
+universe=java
+log=logs/hca-build-human-indexes.$(process).log
+output=logs/hca-build-human-indexes.$(process).out
+error=logs/hca-build-human-indexes.$(process).out
+
+request_cpus=16
+request_memory=200GB
+
+CROMWELL=/woldlab/loxcyc/home/diane/proj/chipseq/cromwell-34.jar
+executable=$(CROMWELL)
+jar_files=$(CROMWELL)
+
+arguments="cromwell.CromwellApp run \
+  library/accessory_workflows/build_hisat2_reference/BuilHISAT2EncodeHumanReferencebundle.wdl \
+  --imports library.zip  \
+  --inputs library/accessory_workflows/build_hisat2_reference/BuilHISAT2HumanReferencebundle24.json"
+queue
+
+arguments="cromwell.CromwellApp run \
+  library/accessory_workflows/build_hisat2_reference/BuilHISAT2EncodeHumanTranReferencebundle.wdl \
+  --imports library.zip  \
+  --inputs library/accessory_workflows/build_hisat2_reference/BuilHISAT2EncodeHumanTranReferencebundle24.json"
+queue
+
+arguments="cromwell.CromwellApp run \
+  library/accessory_workflows/build_hisat2_reference/BuilHISAT2forRSEM.wdl \
+  --imports library.zip  \
+  --inputs library/accessory_workflows/build_hisat2_reference/BuilHISAT2EncodeHumanforRSEM.json"
+queue

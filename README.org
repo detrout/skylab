@@ -294,6 +294,19 @@ GroupQCs -f ./inputs/1336661667/15019_qc.alignment_summary_metrics.txt  -t Picar
 #+END_EXAMPLE
 
 
+* Build ENCODE Human indexes
+
+Created and customized two genomic hisat index commands
+[[file:library/accessory_workflows/build_hisat2_reference/BuilHISAT2EncodeHumanReferencebundle.wdl::task%20BuildHISAT2reference{][BuilHISAT2EncodeHumanReferencebundle.wdl]]
+[[file:library/accessory_workflows/build_hisat2_reference/BuilHISAT2HumanReferencebundle24.json::"HISAT2Ref.gtf_version":%20"V24",][BuilHISAT2HumanReferencebundle24.json]]
+[[file:library/accessory_workflows/build_hisat2_reference/BuilHISAT2EncodeHumanTranReferencebundle.wdl::task%20BuildHISAT2EncodeHumanTrans%20{][BuilHISAT2EncodeHumanTranReferencebundle.wdl]]
+[[file:library/accessory_workflows/build_hisat2_reference/BuilHISAT2EncodeHumanTranReferencebundle24.json::"HISAT2EncodeHumanRef.ref_name":%20"gencode_v24_trans"][BuilHISAT2EncodeHumanTranReferencebundle24.json]]
+
+[[file:library/accessory_workflows/build_hisat2_reference/BuilHISAT2EncodeHumanforRSEM.json::"HISAT2Ref.rsem_index":%20"../../../gencode_V24_primary.tar",][BuilHISAT2EncodeHumanForRSEM.json]]
+
+Launch all 3 with:
+[[file:build-human-indexes.condor::universe=java][build-human-indexes.condor]]
+
 * TODO Try it with and without snps.
   does it impact index build type
   does it impact run time?
