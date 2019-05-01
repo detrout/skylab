@@ -6,13 +6,13 @@ task BuildHISAT2reference{
   command {
     wget http://woldlab.caltech.edu/~diane/genome/mm10-M4-male/gencode.v${gtf_version}-tRNAs-ERCC.gff
     wget http://woldlab.caltech.edu/~diane/genome/mm10-M4-male/male.mm10.chrom-ENCFF001RTP_ERCC_spikein.fa
-    mv male.mm10.chrom-ENCFF001RTP_ERCC_spikein.fa genome.fa
+    mv male.mm10.chrom-ENCFF001RTP_ERCC_spikein.fa ${ref_name}.fa
     wget hgdownload.cse.ucsc.edu/goldenPath/mm10/database/snp${dbsnp_version}Common.txt.gz
     gunzip snp${dbsnp_version}Common.txt.gz
-    hisat2_extract_snps_haplotypes_UCSC.py genome.fa snp${dbsnp_version}Common.txt genome
-    hisat2-build -p 8 genome.fa --snp genome.snp --haplotype genome.haplotype -ss genome.ss --exon genome.exon genome_snp_tran
+    hisat2_extract_snps_haplotypes_UCSC.py ${ref_name}.fa snp${dbsnp_version}Common.txt ${ref_name}
     hisat2_extract_splice_sites.py gencode.v${gtf_version}-tRNAs-ERCC.gff > ${ref_name}.ss
     hisat2_extract_exons.py gencode.v${gtf_version}-tRNAs-ERCC.gff > ${ref_name}.exon
+    hisat2-build -p 8 ${ref_name}.fa --snp ${ref_name}.snp --haplotype ${ref_name}.haplotype --ss ${ref_name}.ss --exon ${ref_name}.exon ${ref_name}
     
     mkdir ${ref_name}
     cp *.ht2 ${ref_name}
