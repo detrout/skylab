@@ -198,7 +198,7 @@ task HISAT2RSEM {
 
 task HISAT2SingleEnd {
   File hisat2_ref
-  File fastq
+  File fastqs
   String ref_name
   String output_basename
   String sample_name
@@ -209,7 +209,7 @@ task HISAT2SingleEnd {
   Int cpu = 4
   # Using fastq x 100 gives factor of a few buffer. BAM can be up to ~5 x fastq.
   # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GB buffer.
-  Int disk = ceil((size(fastq, "GB") * 100) + size(hisat2_ref, "GB") * 2 + 10)
+  Int disk = ceil((size(fastqs, "GB") * 100) + size(hisat2_ref, "GB") * 2 + 10)
   Int preemptible = 5
   Int max_retries = 0
 
@@ -219,7 +219,7 @@ task HISAT2SingleEnd {
 
   parameter_meta {
     hisat2_ref: "HISAT2 reference"
-    fastq: "input fastq from single ended data"
+    fastqs: "input fastq from single ended data"
     ref_name: "the basename of the index for the reference genome"
     output_basename: "basename used for output files"
     sample_name: "sample name of input"
@@ -236,7 +236,7 @@ task HISAT2SingleEnd {
     tar --no-same-owner -xvf "${hisat2_ref}"
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
-      -U ${fastq} \
+      -U ${fastqs} \
       --rg-id=${sample_name} --rg SM:${sample_name} --rg LB:${sample_name} \
       --rg PL:ILLUMINA --rg PU:${sample_name} \
       --new-summary --summary-file "${output_basename}.log" \
