@@ -309,3 +309,97 @@ task HISAT2InspectIndex {
     File log_file ="hisat2_inspect.log"
   }
 }
+
+task HISAT2SingleRSEM {
+  File hisat2_ref
+  File fastqs
+  String ref_name
+  String output_basename
+  String sample_name
+
+  # runtime values
+  String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+  Int machine_mem_mb = 15000
+  Int cpu = 4
+  # Using (fastq1 + fastq2) x 100 gives factor of a few buffer. BAM can be up to ~5 x (fastq1 + fastq2).
+  # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GB buffer.
+  Int disk = ceil((size(fastqs, "GB") * 100 + size(hisat2_ref, "GB") * 2 + 10))
+  Int preemptible = 5
+  Int max_retries = 0
+
+  meta {
+    description: "This HISAT2 alignment task will align paired-end fastq reads to transcriptome only. "
+  }
+
+  parameter_meta {
+    hisat2_ref: "HISAT2 reference"
+    fastqs: "gz fastq file"
+    ref_name: "the basename of the index for the reference genome"
+    output_basename: "basename used for output files"
+    sample_name: "sample name of input"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    cpu: "(optional) the number of cpus to provision for this task"
+    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
+    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
+  }
+
+  command {
+    set -e
+
+    # fix names if necessary.
+    # if [ "${fastqs}" != *.fastq.gz ]; then
+    #     FQ=${fastqs}.fastq.gz
+    #     mv ${fastqs} ${fastqs}.fastq.gz
+    # else
+    #     FQ=${fastqs}
+    # fi
+
+    tar --no-same-owner -xvf "${hisat2_ref}"
+
+    # increase gap alignment penalty to avoid gap alignment
+    # --mp 1,1 --np 1 --score-min L,0,-0.1 is default paramesters when rsem runs alignment by using bowtie2/Bowtie
+    # --mp 1,1 and --np 1 will reduce mismatching penalty to 1 for all.
+    # with no-splice-alignment no-softclip no-mixed options on, HISAT2 will only output concordant alignment without soft-cliping
+    # --rdg 99999999,99999999 and --rfg 99999999,99999999 will give an infinity penalty to alignment with indel.As results
+    # no indel/gaps in alignments
+    hisat2 -t \
+      -x ${ref_name}/${ref_name} \
+      -U ${fastqs} \
+      --rg-id=${sample_name} --rg SM:${sample_name} --rg LB:${sample_name} \
+      --rg PL:ILLUMINA --rg PU:${sample_name} \
+      --new-summary --summary-file ${output_basename}.log \
+      --met-file ${output_basename}.hisat2.met.txt --met 5 \
+      -k 10 \
+      --mp 1,1 \
+      --np 1 \
+      --score-min L,0,-0.1 \
+      --secondary \
+      --no-mixed \
+      --no-softclip \
+      --no-discordant \
+      --rdg 99999999,99999999 \
+      --rfg 99999999,99999999 \
+      --no-spliced-alignment \
+      --seed 12345 \
+      -p ${cpu} -S >(samtools view -1 -h -o ${output_basename}_unsorted.bam)
+    samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}_unsorted.bam"
+    samtools index "${output_basename}.bam"
+  }
+
+  runtime {
+    docker: docker
+    memory: "${machine_mem_mb} MB"
+    disks: "local-disk ${disk} HDD"
+    cpu: cpu
+    preemptible: preemptible
+    maxRetries: max_retries
+  }
+
+  output {
+    File log_file = "${output_basename}.log"
+    File met_file = "${output_basename}.hisat2.met.txt"
+    File output_bam = "${output_basename}.bam"
+  }
+}
