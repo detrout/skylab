@@ -226,6 +226,34 @@ cd library/tasks
 zip -9 ../../library.zip *.wdl
 #+END_SRC
 
+That didn't work. They only had a paired end pipeline implemented.
+
+So I need to actually implement parts of their pipeline
+
+I managed to get it to run and then HISAT2 died not being able to find
+the index. It looks like I need the files inside the tar need to match
+${ref_name}/${ref_name}
+
+#+BEGIN_SRC
+java -jar ~/proj/chipseq/cromwell-34.jar run \
+  library/accessory_workflows/build_hisat2_reference/BuilHISAT2EncodeMouseReferencebundle.wdl  \
+  --imports library.zip  \
+  --inputs library/accessory_workflows/build_hisat2_reference/BuilHISAT2MouseReferencebundle4.json
+#+END_SRC
+
+Well that's taking a long time to run. does that count as success?
+Once the index is built then I need to go back and see if the first
+HISAT2SingleEnd task will run correctly.
+
+Looks several next tasks should be ok. Need to investigate the command
+for HISAT2SingleRSEM
+
+* Progress getting pipeline to run
+
+I've had to modify several of their wdl tasks to support single ended
+runs.
+
+Added HISAT2.HISAT2SingleRSEM and RSEM.RSEMSingleExpression
 * TODO Try it with and without snps.
   does it impact index build type
   does it impact run time?
