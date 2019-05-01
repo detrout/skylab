@@ -263,6 +263,37 @@ lectRnaMetrics/execution/gencode.v4.rRNA.interval_list
 Update [[file:pipelines/smartseq2_single_sample/ENCODEMouseSingle.json::"SmartSeq2SingleCell.rrna_intervals":%20"/woldlab/loxcyc/home/diane/proj/hca-rna-pipeline-skylab/gencode.v4.rRNA.interval_list",][ENCODEMouseSingle.json]] with full path to the interval_list file
 * Diagnosing GroupQCs failure
 
+align.condor reported an error.
+#+BEGIN_EXAMPLE
+heck the content of stderr for potential additional information: /woldlab/loxcyc/home/diane/proj/hca-rna-pipeline-skylab/cromwell-executions/SmartSeq2SingleCell/87133f7d-fa2c-4d4b-8942-db26ce90570b/call-GroupQCOutputs/execution/stderr.
+ Traceback (most recent call last):
+  File "/usr/local/bin/GroupQCs", line 11, in <module>
+    load_entry_point('sctools==0.3.0', 'console_scripts', 'GroupQCs')()
+  File "/usr/local/lib/python3.6/site-packages/sctools/platform.py", line 466, in group_qc_outputs
+    groups.write_aggregated_picard_metrics_by_row(args.file_names, args.output_name)
+  File "/usr/local/lib/python3.6/site-packages/sctools/groups.py", line 40, in write_aggregated_picard_metrics_by_row
+    cat = m['CATEGORY']
+TypeError: string indices must be integers
+#+END_EXAMPLE
+
+I dug into [[https://github.com/HumanCellAtlas/sctools/blob/v0.3.3/src/sctools/groups.py#L40][groups.py#L40]] and category at that point is a list of 
+dictionary keys.
+
+It's possible that their sctools package doesn't handle single end
+runs. Maybe I should try it on the evaluation data?
+
+I had to install sctools into a virtualenv
+#+BEGIN_EXAMPLE
+mkvirtualenv --python=/usr/bin/python3 sctools
+pip install git+https://github.com/HumanCellAtlas/sctools@v0.3.0#egg=sctools
+#+END_EXAMPLE
+
+Tried running GroupQCs and got the same error
+#+BEGIN_EXAMPLE
+GroupQCs -f ./inputs/1336661667/15019_qc.alignment_summary_metrics.txt  -t Picard -o Picard_group
+#+END_EXAMPLE
+
+
 * TODO Try it with and without snps.
   does it impact index build type
   does it impact run time?
