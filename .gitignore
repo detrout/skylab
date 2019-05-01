@@ -156,3 +156,13 @@ ENV/
 
 # Emacs backuup files
 *~
+
+# Ignore index and other temporary files built while testing
+gencode.v4.rRNA.interval_list
+gencode_v4_primary.tar
+gencode_v4_trans.tar.gz
+hisat2_M4_snp.tar.gz
+mm10.v4.refFlat.txt
+library.zip
+cromwell-executions/
+cromwell-workflow-logs/
