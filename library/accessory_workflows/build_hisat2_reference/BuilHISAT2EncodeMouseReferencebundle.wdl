@@ -4,15 +4,15 @@ task BuildHISAT2reference{
   String dbsnp_version ## dbsnp version, integer num, ex 150
   
   command {
-    wget http://woldlab.caltech.edu/~diane/genome/mm10-M4-male/gencode.vM${gtf_version}-tRNAs-ERCC.gff
+    wget http://woldlab.caltech.edu/~diane/genome/mm10-M4-male/gencode.v${gtf_version}-tRNAs-ERCC.gff
     wget http://woldlab.caltech.edu/~diane/genome/mm10-M4-male/male.mm10.chrom-ENCFF001RTP_ERCC_spikein.fa
     mv male.mm10.chrom-ENCFF001RTP_ERCC_spikein.fa genome.fa
     wget hgdownload.cse.ucsc.edu/goldenPath/mm10/database/snp${dbsnp_version}Common.txt.gz
     gunzip snp${dbsnp_version}Common.txt.gz
     hisat2_extract_snps_haplotypes_UCSC.py genome.fa snp${dbsnp_version}Common.txt genome
-    hisat2_extract_splice_sites.py gencode.v${gtf_version}.vM4-tRNAs-ERCC.gff > genome.ss
-    hisat2_extract_exons.py gencode.v${gtf_version}.vM4-tRNAs-ERCC.gff > genome.exon
     hisat2-build -p 8 genome.fa --snp genome.snp --haplotype genome.haplotype -ss genome.ss --exon genome.exon genome_snp_tran
+    hisat2_extract_splice_sites.py gencode.v${gtf_version}-tRNAs-ERCC.gff > ${ref_name}.ss
+    hisat2_extract_exons.py gencode.v${gtf_version}-tRNAs-ERCC.gff > ${ref_name}.exon
     
     mkdir ${ref_name}
     cp *.ht2 ${ref_name}
