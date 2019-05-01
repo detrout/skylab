@@ -212,7 +212,9 @@ java -jar ~/proj/chipseq/cromwell-34.jar run pipelines/smartseq2_single_sample/S
 
 #+END_SRC
 
-* TODO Not working... not sure how to set import paths for cromwell
+
+
+* Not working... not sure how to set import paths for cromwell
 
 cromwell.jar run has a parameter -p / --imports that specifies a
 directory or zipfile to search.
