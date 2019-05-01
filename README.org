@@ -307,6 +307,12 @@ Created and customized two genomic hisat index commands
 Launch all 3 with:
 [[file:build-human-indexes.condor::universe=java][build-human-indexes.condor]]
 
+And that didn't work. I forgot $(process) so I don't know which ones
+failed.
+
+At least the last RSEM build failed because it uses the annotation
+from one of the previous index builds. (So I need to split them up.)
+
 * TODO Try it with and without snps.
   does it impact index build type
   does it impact run time?
