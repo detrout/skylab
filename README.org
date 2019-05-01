@@ -254,6 +254,15 @@ I've had to modify several of their wdl tasks to support single ended
 runs.
 
 Added HISAT2.HISAT2SingleRSEM and RSEM.RSEMSingleExpression
+
+This latest run failed looking for
+
+/woldlab/loxcyc/home/diane/proj/hca-rna-pipeline-skylab/cromwell-executions/SmartSeq2SingleCell/f54774ca-8f2c-4f70-9210-443854708660/call-Col
+lectRnaMetrics/execution/gencode.v4.rRNA.interval_list
+
+Update [[file:pipelines/smartseq2_single_sample/ENCODEMouseSingle.json::"SmartSeq2SingleCell.rrna_intervals":%20"/woldlab/loxcyc/home/diane/proj/hca-rna-pipeline-skylab/gencode.v4.rRNA.interval_list",][ENCODEMouseSingle.json]] with full path to the interval_list file
+* Diagnosing GroupQCs failure
+
 * TODO Try it with and without snps.
   does it impact index build type
   does it impact run time?
