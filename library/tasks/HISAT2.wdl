@@ -244,6 +244,7 @@ task HISAT2SingleEnd {
       --seed 12345 \
       -p ${cpu} -S >(samtools view -1 -h -o ${output_basename}_unsorted.bam)
     samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}_unsorted.bam"
+    samtools index "${output_basename}.bam"
   }
 
   runtime {
